@@ -27,10 +27,11 @@ app.use(
 )
 
 const db = mysql.createConnection({
-    user:'root',
-    password:'Gokul@003',
-    host:'localhost',
-    database:'vaccine'
+    user:'avnadmin',
+    password:'AVNS_5W135YZrjuwuLR-WHt5',
+    host:'mysql-39af648c-gokul.a.aivencloud.com',
+    database:'vaccine',
+    port:'11941'
 })
 
 const verifyJWT = (req, res, next) => {
@@ -158,7 +159,7 @@ app.post('/register', (req, res) => {
     console.log(req.body);
 
     if (password !== cpassword) {
-        return res.status(400).json({ error: 'Password and Confirm Password do not match' });
+        return res.status(400).json({ message: 'Password and Confirm Password do not match' });
     }
 
     bcryptjs.hash(password,setRounds,(err,hash)=>{
@@ -182,39 +183,45 @@ app.post('/register', (req, res) => {
     });
 });
 
-    app.post('/add', (req, res) => {
-        const city = req.body?.city;
-        const hname = req.body?.hname;
-        const contact = req.body?.contact;
-        const ddate = req.body?.ddate;
-        const slots = req.body?.slots;
-        const count = req.body?.count;
-        const ost = req.body?.ost;
-        const oet = req.body?.oet;
-        const sst = req.body?.sst;
-        const sset = req.body?.sset;
-        const tst = req.body?.tst;
-        const tet = req.body?.tet;
-        const slotone = req.body?.slotone;
-        const slottwo = req.body?.slottwo;
-        const slotthree = req.body?.slotthree;
+app.post('/add', (req, res) => {
+    const city = req.body?.city;
+    const hname = req.body?.hname;
+    const contact = req.body?.contact;
+    const ddate = req.body?.ddate;
+    const slots = req.body?.slots;
+    const count = req.body?.count;
+    const ost = req.body?.ost;
+    const oet = req.body?.oet;
+    const sst = req.body?.sst;
+    const sset = req.body?.sset;
+    const tst = req.body?.tst;
+    const tet = req.body?.tet;
+    const slotone = req.body?.slotone;
+    const slottwo = req.body?.slottwo;
+    const slotthree = req.body?.slotthree;
 
-        console.log(req.body);
+    // Check if any required field is missing
+    if (!city || !hname || !contact || !ddate || !slots || !count || !ost || !oet || !sst || !sset || !tst || !tet || !slotone || !slottwo || !slotthree) {
+        return res.status(400).json({ error: 'Please fill in all details' });
+    }
 
-        db.query(
-            'INSERT INTO `add` (city, hname, contact, ddate, slots, count, ost, oet, sst, sset, tst, tet, slotone, slottwo, slotthree) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            [city, hname, contact, ddate, slots, count, ost, oet, sst, sset, tst, tet, slotone, slottwo, slotthree],
-            (err, result) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).json({ error: 'Internal Server Error' });
-                } else {
-                    console.log(result);
-                    return res.status(200).json({ message: 'Registration Successful' });
-                }
+    console.log(req.body);
+
+    db.query(
+        'INSERT INTO `add` (city, hname, contact, ddate, slots, count, ost, oet, sst, sset, tst, tet, slotone, slottwo, slotthree) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        [city, hname, contact, ddate, slots, count, ost, oet, sst, sset, tst, tet, slotone, slottwo, slotthree],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                console.log(result);
+                return res.status(200).json({ message: 'Registration Successful' });
             }
-        );
-    });
+        }
+    );
+ }); 
+
 
     app.put("/updateData/:id", (req, res) => {
         const id = req.params.id;
