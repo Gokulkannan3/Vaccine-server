@@ -155,6 +155,7 @@ app.post('/register', (req, res) => {
     const password = req.body?.password;
     const cpassword = req.body?.cpassword;
     const mem = req.body?.mem;
+    const yes = req.body?.yes;
 
     console.log(req.body);
 
@@ -168,8 +169,8 @@ app.post('/register', (req, res) => {
             }
 
         db.query(
-            'INSERT INTO signup(firstname, lastname, dob, age, email, contact, address, mem, usermail, password, cpassword) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-            [firstname, lastname, dob, age, email, contact, address, mem, usermail, hash, hash],
+            'INSERT INTO signup(firstname, lastname, dob, age, email, contact, address, mem, usermail, password, cpassword, yes) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+            [firstname, lastname, dob, age, email, contact, address, mem, usermail, hash, hash, yes],
             (err, result) => {
                 if (err) {
                     console.log(err);
@@ -182,6 +183,27 @@ app.post('/register', (req, res) => {
         );
     });
 });
+
+app.post('/baby', (req, res) => {
+    const babyname = req.body?.babyname;
+    const babydob = req.body?.babydob;
+    const babygender = req.body?.babygender;
+    const hospital = req.body?.hospital;
+    db.query(
+        'INSERT INTO signup(babynae,babydob,babygender,hospital) VALUES (?,?,?,?)',
+        [babyname,babydob,babygender,hospital],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                console.log(result);
+                return res.status(200).json({ message: 'Registration Successful' });
+            }
+        }
+    );
+}
+)
 
 app.post('/add', (req, res) => {
     const city = req.body?.city;
