@@ -189,21 +189,42 @@ app.post('/baby', (req, res) => {
     const babydob = req.body?.babydob;
     const babygender = req.body?.babygender;
     const hospital = req.body?.hospital;
+
+    // Fetch the last inserted record from the baby table
     db.query(
-        'INSERT INTO signup (babyname,babydob,babygender,hospital) VALUES (?,?,?,?)',
-        [babyname,babydob,babygender,hospital],
-        (err, result) => {
+        'SELECT * FROM signup ORDER BY id DESC LIMIT 1',
+        (err, babyResult) => {
             if (err) {
                 console.log(err);
                 return res.status(500).json({ error: 'Internal Server Error' });
-            } else {
-                console.log(result);
-                return res.status(200).json({ message: 'Registration Successful' });
             }
+
+            // Check if there are any records in the baby table
+            if (babyResult.length === 0) {
+                return res.status(404).json({ error: 'No baby records found' });
+            }
+
+            // Extract the user ID from the last inserted baby record
+            const userId = babyResult[0].userId;
+
+            // Update user details in the signup table
+            db.query(
+                'UPDATE signup SET babyname = ?, babydob = ?, babygender = ?, hospital = ? WHERE id = ?',
+                [babyname, babydob, babygender, hospital, userId],
+                (updateErr, updateResult) => {
+                    if (updateErr) {
+                        console.log(updateErr);
+                        return res.status(500).json({ error: 'Internal Server Error' });
+                    }
+
+                    console.log(updateResult);
+                    return res.status(200).json({ message: 'User details updated successfully' });
+                }
+            );
         }
     );
-}
-)
+});
+
 
 app.post('/add', (req, res) => {
     const city = req.body?.city;
