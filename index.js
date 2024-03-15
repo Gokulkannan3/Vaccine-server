@@ -190,7 +190,7 @@ app.post('/baby', (req, res) => {
     const babygender = req.body?.babygender;
     const hospital = req.body?.hospital;
     db.query(
-        'INSERT INTO signup(babynae,babydob,babygender,hospital) VALUES (?,?,?,?)',
+        'INSERT INTO signup (babyname,babydob,babygender,hospital) VALUES (?,?,?,?)',
         [babyname,babydob,babygender,hospital],
         (err, result) => {
             if (err) {
